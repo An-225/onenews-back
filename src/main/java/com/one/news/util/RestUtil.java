@@ -20,7 +20,7 @@ import java.util.Optional;
 public class RestUtil {
     private static final Logger log = LoggerFactory.getLogger(RestUtil.class);
 
-    public static ResponseEntity<String> doRequest(String url, Map<String, Object> queryString,Map<String, String> headers, Object body, HttpMethod method, Integer timeout)
+    public static ResponseEntity<String> doRequest(String url, Map<String, String> queryString, Map<String, String> headers, Object body, HttpMethod method, Integer timeout)
             throws JsonProcessingException {
         Objects.requireNonNull(url, "URL não pode ser nula");
         Objects.requireNonNull(method, "Método HTTP não pode ser nulo");

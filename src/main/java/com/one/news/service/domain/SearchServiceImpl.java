@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,13 +22,20 @@ public class SearchServiceImpl implements SearchService {
     String newsHost = "https://newsapi.org/v2/everything";
 
     @Override
-    public NewsResultDTO getArticles(String topic, String to, String from) throws JsonProcessingException {
+    public NewsResultDTO getArticles(String topic, String to, String from, String sort) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         var query = URLEncoder.encode(topic, StandardCharsets.UTF_8);
-        String apiNewsUrl = String.format("%s?q=%s&from=%s&to=%s&sortBy=%s&language=%s&apiKey=%s",
-                newsHost, query, from, to, "popularity","pt", apiKey);
-        var restResponse = RestUtil.doRequest(apiNewsUrl, null, null, null, HttpMethod.GET, 20000);
-        var newsResult = mapper.readValue(restResponse.getBody(), new TypeReference<NewsResultDTO>() {});
+        var queryString = Map.of("q", query,
+                "from", from,
+                "to", to,
+                "sortBy", sort,
+                "language", "pt",
+                "apiKey", apiKey
+        );
+
+        var restResponse = RestUtil.doRequest(newsHost, queryString, null, null, HttpMethod.GET, 20000);
+        var newsResult = mapper.readValue(restResponse.getBody(), new TypeReference<NewsResultDTO>() {
+        });
         List<ArticleDTO> filteredArticles = newsResult.getArticles().stream()
                 .filter(article -> article.getTitle() != null && !article.getTitle().trim().isEmpty() && !"[Removed]".equals(article.getTitle()))
                 .toList();

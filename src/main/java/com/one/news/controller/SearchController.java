@@ -24,9 +24,11 @@ public class SearchController {
     public ResponseEntity<NewsResultDTO> getArticlesByTopic(
             @RequestParam String topic,
             @RequestParam String to,
-            @RequestParam String from) throws JsonProcessingException {
+            @RequestParam String from,
+            @RequestParam(required = false, defaultValue = "popularity") String sort
+    ) throws JsonProcessingException {
         log.info("get articles by topic: {}", topic);
-        var articles = searchService.getArticles(topic, to, from);
+        var articles = searchService.getArticles(topic, to, from, sort);
         return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 }
