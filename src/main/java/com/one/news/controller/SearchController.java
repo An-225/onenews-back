@@ -3,6 +3,7 @@ package com.one.news.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.one.news.dto.NewsResultDTO;
+import com.one.news.dto.SourceResultDTO;
 import com.one.news.enumeration.ConstantsAPI;
 import com.one.news.service.inteface.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,16 @@ public class SearchController {
             @RequestParam String topic,
             @RequestParam String to,
             @RequestParam String from,
-            @RequestParam(required = false, defaultValue = "popularity") String sort
+            @RequestParam(required = false, defaultValue = "popularity") String sort,
+            @RequestParam(required = false) String source
     ) throws JsonProcessingException {
         log.info("get articles by topic: {}", topic);
-        var articles = searchService.getArticles(topic, to, from, sort);
+        var articles = searchService.getArticles(topic, to, from, sort, source);
         return new ResponseEntity<>(articles, HttpStatus.OK);
+    }
+
+    @GetMapping("sources")
+    public ResponseEntity<SourceResultDTO> getSources() throws JsonProcessingException {
+        return new ResponseEntity<>(searchService.getSources(), HttpStatus.OK);
     }
 }
